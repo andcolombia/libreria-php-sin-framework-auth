@@ -289,6 +289,11 @@ class OpenIDConnectClient
 
         // Do a preemptive check to see if the provider has thrown an error from a previous redirect
         if (isset($_REQUEST['error'])) {
+            if($_REQUEST['error'] == 'login_required'){
+                session_destroy();
+                $this->redirect('http://localhost:3000/logout.php');
+                return false;
+            }
             $desc = isset($_REQUEST['error_description']) ? ' Description: ' . $_REQUEST['error_description'] : '';
             throw new OpenIDConnectClientException('Error: ' . $_REQUEST['error'] .$desc);
         }

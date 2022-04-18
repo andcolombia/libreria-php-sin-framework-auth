@@ -1,30 +1,30 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require 'includes/config.php';
-require 'includes/functions.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 use Jumbojett\OpenIDConnectClient;
 session_start();
 
-if(isset($_GET["error"]))
-{
-    if($_GET["error"] == 'login_required'){
-        Header('Location: '.'logout.php' );
-    }
-    
-}
-
-if(!isset($_SESSION["urlRedirect"]) ){
-    $oidc = new OpenIDConnectClient('https://qaautenticaciondigital.and.gov.co', 
+    $oidc = new OpenIDConnectClient('https://qaautenticaciondigital.and.gov.co',
     'phpDev',
     null);
-
+    
 $oidc->setRedirectURL('http://localhost:3000/login.php');
 $oidc->setCodeChallengeMethod('S256');
 $oidc->addScope('co_scope');
+
 if(isset($_GET["type"])){
-    $oidc->addAuthParam(array('acr_values'=>'action:'. $_GET["type"]));
+    if($_GET["type"]=="manage"){
+        $oidc->addAuthParam(array('acr_values'=>'action:manage'));
+        $oidc->addAuthParam(array('login_hint'=>$_SESSION["userinfo"]->name));
+    }
+}
+else{
+    $oidc->addAuthParam(array('prompt'=>'none'));
+
+    if(isset($_GET["url"])){
+        $_SESSION["urlRedirect"]  = $_GET["url"];
+    }
 }
 
 $oidc->authenticate();
@@ -53,16 +53,5 @@ $_SESSION["id_token"] = $idtoken;
 $_SESSION["accesstoken"] = $accessToken;
 $_SESSION["userinfo"] = $userInfo;
 
-Header('Location: '.'index.php' );
-}
-else{
-    Header('Location: '.$_SESSION["urlRedirect"] );
-}
-
-
-
-    
-
 ?>
-
 

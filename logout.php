@@ -14,7 +14,6 @@ $idtoken = $_SESSION["id_token"];
 
 session_destroy();
 
-//Header('Location: '."index.php");
 $oidc->signOut($idtoken,  "http://localhost:3000/index.php");
 
 ?>
