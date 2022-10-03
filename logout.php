@@ -5,6 +5,7 @@ ini_set('display_errors', 'On');
 use Jumbojett\OpenIDConnectClient;
 session_start() ;
 $oidc = new OpenIDConnectClient('https://qaautenticaciondigital.and.gov.co',
+                                //'https://localhost:44306',
                                 'phpDev',
                                 null);
 
